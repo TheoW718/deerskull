@@ -1,0 +1,19 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+canvas, video {
+  display: block;
+  position: absolute;
+  object-fit: cover;
+  width: 100% !important;
+  height: 100% !important;
+  transform: scaleX(-1); /* this is mirrow and aslo you have to type the stars to mute this */
+}
+
+canvas {
+  z-index: 1;
+}
+
+
