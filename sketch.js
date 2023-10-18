@@ -1,7 +1,7 @@
 let video, classifier, faceapi, inputLabel
 let boxes = []
 let trained = false
-const imgSize = 256
+//const imgSize = 256
 
 const w = 640;
 const h = 360;
@@ -12,6 +12,7 @@ function setup() {
 
   initVideo()
   initFaceDetector()
+  pixelDensity(1);
   //initFaceClassifier()
   //drawMenu()
 }
@@ -39,7 +40,7 @@ function drawBoxes() {
       noStroke()
       // strokeWeight(2)
       textSize(18)
-      text(box.label, box.x + 10, box.y + box.height + 20)
+      // text(box.label, box.x + 10, box.y + box.height + 20)
     }
   }
 }
@@ -52,7 +53,7 @@ function initVideo() {
 
 function initFaceClassifier() {
   let options = {
-    inputs: [imgSize, imgSize, 4],
+    inputs: [w/2, h/2, 4],
     task: 'imageClassification',
     debug: true,
   }
@@ -118,57 +119,4 @@ function classifyFace(box) {
     label = results[0].label
     box.label = label
   });
-}
-
-function keyPressed() {
-  // if (key == " ") {
-  //   addExample(inputLabel.value())
-  // }
-}
-
-function addExample(label) {
-  if (boxes.length === 0) {
-    console.error("No face found")
-  } else if (boxes.length === 1) {
-    const box = boxes[0]
-    img = get(box.x, box.y, box.width, box.height)
-    img.resize(imgSize, imgSize)
-    console.log('Adding example: ' + label)
-    classifier.addData({ image: img }, { label })
-  } else {
-    console.error("Only one face should appear")
-  }
-}
-
-function trainModel() {
-  classifier.normalizeData()
-  classifier.train({ epochs: 50 }, () =>  {
-    console.log('training complete')
-    trained = true
-  })
-}
-
-function drawMenu() {
-  inputLabel = createInput('')
-  inputLabel.position(650, 30)
-
-  const takePhotoBtn = createButton("Capture")
-  takePhotoBtn.position(810, 30)
-  takePhotoBtn.mousePressed(() => addExample(inputLabel.value()))
-
-  const trainBtn = createButton("Train")
-  trainBtn.position(650, 80)
-  trainBtn.mousePressed(() => {
-    trainModel()
-  })
-
-  const loadModelInput = createFileInput(file => {
-    // loadData expects an array of File objects, so we have to wrap the file in an array
-    classifier.loadData([file.file], () => console.log("Data Loaded"))
-  })
-  loadModelInput.position(650, 130)
-
-  const saveDataBtn = createButton("Save Data")
-  saveDataBtn.position(650, 180)
-  saveDataBtn.mousePressed(() => classifier.saveData('model'))
 }
